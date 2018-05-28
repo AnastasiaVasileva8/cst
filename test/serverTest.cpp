@@ -178,7 +178,7 @@ ip_pass_count* func1(sockaddr_in& address, std::vector<ip_pass_count>& clients)/
 bool alreadyConnected(sockaddr_in& clientInfo, std::vector<sockaddr_in>& connectedAddresses)
 {
 	//for (auto client : connectedAddresses)
-	for (size_t i = 0; i < clients.size(); ++i)
+	for (size_t i = 0; i < client.size(); ++i)
 	{
 		if (client.sin_addr.s_addr == clientInfo.sin_addr.s_addr)
 			return true;
