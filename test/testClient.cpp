@@ -83,23 +83,3 @@ int main(int argc, char** argv)
 	return RUN_ALL_TESTS();
 	
 }
-
-	// Клиент ожидает ответ от сервера, данные с сервера выводятся в консоль
-	while (true)
-	{
-
-                 std::string pas;
-	         std::cout << "Input password: " << std::endl;
-	         std::cin >> pas;
-	         std::cout << std::endl;
-
-	         //клиент посылает серверу пароль, одновременно оповещая его о подключении
-	         connect = sendto(clientSocket, pas.c_str(), pas.length(), 0, (struct sockaddr*) &connectionAddress, sizeof(connectionAddress));
-
-		int response = recvfrom(clientSocket, buf, 11, 0, (struct sockaddr*) &connectionAddress, &connectionSize);
-		if (response > 0)
-			std::cout << buf << std::endl;
-	}
-
-	return 0;
-}
