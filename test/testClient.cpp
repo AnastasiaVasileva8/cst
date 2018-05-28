@@ -7,11 +7,13 @@
 #include "gtest/gtest.h"
 
 
-bool makeSocket(int* socket)
+//bool makeSocket(int* socket)
+bool makeSocket(int* sock)
 {
-	clientSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	//clientSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	*sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	
-	if (clientSocket < 0)
+	if (*sock < 0)
 		return false;
 	return true;
 }
@@ -26,12 +28,14 @@ TEST(Client, CreateSocket)
 TEST(Client, WrongPass)
 {
 	int Socket;
-	makeSocket(Socket);
+	//makeSocket(Socket);
+	makeSocket(&Socket);
 	
 	sockaddr_in connectionAddress;
 	connectionAddress.sin_family = AF_INET;
 	connectionAddress.sin_port = htons(56789);
-	connectionAddress.sin_addr = htonl(INADDR_LOOPBACK);
+	//connectionAddress.sin_addr = htonl(INADDR_LOOPBACK);
+	connectionAddress.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 	
 	std::string totallyWrongPassword = "notcorrectpasssorry";
 	std::string response;
@@ -50,12 +54,14 @@ TEST(Client, WrongPass)
 TEST(Client, CorrectPass)
 {
 	int Socket;
-	makeSocket(Socket);
+	//makeSocket(Socket);
+	makeSocket(&Socket);
 	
 	sockaddr_in connectionAddress;
 	connectionAddress.sin_family = AF_INET;
 	connectionAddress.sin_port = htons(56789);
-	connectionAddress.sin_addr = htonl(INADDR_LOOPBACK);
+	//connectionAddress.sin_addr = htonl(INADDR_LOOPBACK);
+	connectionAddress.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 	
 	std::string totallyWrongPassword = "A1234";
 	std::string response;
