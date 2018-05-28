@@ -9,7 +9,7 @@
 
 
 struct ip_pass_count
-//структура клиентов для обработки пароля,ip,кол-во попыток,время блокировки
+//Г±ГІГ°ГіГЄГІГіГ°Г  ГЄГ«ГЁГҐГ­ГІГ®Гў Г¤Г«Гї Г®ГЎГ°Г ГЎГ®ГІГЄГЁ ГЇГ Г°Г®Г«Гї,ip,ГЄГ®Г«-ГўГ® ГЇГ®ГЇГ»ГІГ®ГЄ,ГўГ°ГҐГ¬Гї ГЎГ«Г®ГЄГЁГ°Г®ГўГЄГЁ
 {
 	ip_pass_count() = default;
 	ip_pass_count(sockaddr_in clientInfo) : clientInfo(clientInfo)
@@ -26,12 +26,12 @@ ip_pass_count* func1(sockaddr_in&, std::vector<ip_pass_count>&);
 
 
 
-//Сервер
+//Г‘ГҐГ°ГўГҐГ°
 
 int main(int argc, char** argv)
 {
 
-	// Создание сокета протокол UDP
+	// Г‘Г®Г§Г¤Г Г­ГЁГҐ Г±Г®ГЄГҐГІГ  ГЇГ°Г®ГІГ®ГЄГ®Г« UDP
 	int serverSocket;
 	if ((serverSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
 	{
@@ -41,15 +41,16 @@ int main(int argc, char** argv)
 
 	std::cout << "Socket created" << std::endl;
 	
-	// IP-адрес сервера, порт
+	// IP-Г Г¤Г°ГҐГ± Г±ГҐГ°ГўГҐГ°Г , ГЇГ®Г°ГІ
 	sockaddr_in addressInf;
 	addressInf.sin_family = AF_INET;
 	addressInf.sin_port = htons(56789);
-	addressInf.sin_addr = htonl(INADDR_ANY);
+	addressInf.sin_addr.s_addr = htonl(INADDR_ANY);
+	//addressInf.sin_addr = htonl(INADDR_ANY);
 	//inet_pton(addressInf.sin_family, "192.168.56.1", &addressInf.sin_addr);
     //    inet_aton("10.0.2.15", &addressInf.sin_addr);
 
-	// Привязка сокета к адресу
+	// ГЏГ°ГЁГўГїГ§ГЄГ  Г±Г®ГЄГҐГІГ  ГЄ Г Г¤Г°ГҐГ±Гі
 	if (bind(serverSocket, (sockaddr*) &addressInf, sizeof(addressInf)) == -1)
 	{
 		std::cout << "Socket binding error" << std::endl;
@@ -59,65 +60,65 @@ int main(int argc, char** argv)
 
 	std::cout << "Socket binded" << std::endl;
 
-	// Массив подключенных клиентов
+	// ГЊГ Г±Г±ГЁГў ГЇГ®Г¤ГЄГ«ГѕГ·ГҐГ­Г­Г»Гµ ГЄГ«ГЁГҐГ­ГІГ®Гў
 	std::vector<sockaddr_in> clientsAddresses;
 	sockaddr_in clientInfo;
 	socklen_t clientSize = sizeof(clientInfo);
-	// Буфер для полученных от клиента данных
+	// ГЃГіГґГҐГ° Г¤Г«Гї ГЇГ®Г«ГіГ·ГҐГ­Г­Г»Гµ Г®ГІ ГЄГ«ГЁГҐГ­ГІГ  Г¤Г Г­Г­Г»Гµ
 	char buffer[1024];
 	int receivedBytes;
-	std::string message;//сообщение клиента
-	std::string mes;//сообщение сервера
-	std::string passServer = "A1234";//пароль на сервере
+	std::string message;//Г±Г®Г®ГЎГ№ГҐГ­ГЁГҐ ГЄГ«ГЁГҐГ­ГІГ 
+	std::string mes;//Г±Г®Г®ГЎГ№ГҐГ­ГЁГҐ Г±ГҐГ°ГўГҐГ°Г 
+	std::string passServer = "A1234";//ГЇГ Г°Г®Г«Гј Г­Г  Г±ГҐГ°ГўГҐГ°ГҐ
 
 	ip_pass_count ippasscount;
-	std::vector<ip_pass_count> clientsStruct; //вектор структур клиентов
+	std::vector<ip_pass_count> clientsStruct; //ГўГҐГЄГІГ®Г° Г±ГІГ°ГіГЄГІГіГ° ГЄГ«ГЁГҐГ­ГІГ®Гў
 	std::cout << "Waiting for clients..." << std::endl;
 
-	// Сервер ждет сообщения от клиентов
+	// Г‘ГҐГ°ГўГҐГ° Г¦Г¤ГҐГІ Г±Г®Г®ГЎГ№ГҐГ­ГЁГї Г®ГІ ГЄГ«ГЁГҐГ­ГІГ®Гў
 	while (true)
 	{
 		receivedBytes = recvfrom(serverSocket, buffer, sizeof(buffer), 0, (sockaddr*)&clientInfo, &clientSize);
-		// Сообщение получено
+		// Г‘Г®Г®ГЎГ№ГҐГ­ГЁГҐ ГЇГ®Г«ГіГ·ГҐГ­Г®
 		if (receivedBytes > 0)
 		{
 			std::string passClient = message.assign(buffer);
-			passClient = passClient.substr(0, receivedBytes);//отделить значащую часть - пароль
+			passClient = passClient.substr(0, receivedBytes);//Г®ГІГ¤ГҐГ«ГЁГІГј Г§Г­Г Г·Г Г№ГіГѕ Г·Г Г±ГІГј - ГЇГ Г°Г®Г«Гј
 
 			std::cout << "Client message" << std::endl;
-			// Если клиент не был подключен к серверу
-			if (!alreadyConnected(clientInfo, clientsAddresses))//добавление нового клиента в вектор
+			// Г…Г±Г«ГЁ ГЄГ«ГЁГҐГ­ГІ Г­ГҐ ГЎГ»Г« ГЇГ®Г¤ГЄГ«ГѕГ·ГҐГ­ ГЄ Г±ГҐГ°ГўГҐГ°Гі
+			if (!alreadyConnected(clientInfo, clientsAddresses))//Г¤Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ Г­Г®ГўГ®ГЈГ® ГЄГ«ГЁГҐГ­ГІГ  Гў ГўГҐГЄГІГ®Г°
 			{
 				
-				clientsAddresses.push_back(clientInfo);// Новый клиент заносится в массив
+				clientsAddresses.push_back(clientInfo);// ГЌГ®ГўГ»Г© ГЄГ«ГЁГҐГ­ГІ Г§Г Г­Г®Г±ГЁГІГ±Гї Гў Г¬Г Г±Г±ГЁГў
 				clientsStruct.push_back(ip_pass_count(clientInfo));
 			}
-			ip_pass_count* Client_ch = func1(clientInfo, clientsStruct);//узнаем текущего клиента из существующих в векторе (ip)
+			ip_pass_count* Client_ch = func1(clientInfo, clientsStruct);//ГіГ§Г­Г ГҐГ¬ ГІГҐГЄГіГ№ГҐГЈГ® ГЄГ«ГЁГҐГ­ГІГ  ГЁГ§ Г±ГіГ№ГҐГ±ГІГўГіГѕГ№ГЁГµ Гў ГўГҐГЄГІГ®Г°ГҐ (ip)
 			time_t rawtime;
-			if (Client_ch->countpass > 0)//еще есть попытки
+			if (Client_ch->countpass > 0)//ГҐГ№ГҐ ГҐГ±ГІГј ГЇГ®ГЇГ»ГІГЄГЁ
 			{ 
-				//проверяем пароль
+				//ГЇГ°Г®ГўГҐГ°ГїГҐГ¬ ГЇГ Г°Г®Г«Гј
 				if (passServer==passClient)
 				{
-					//отправляем ок 
+					//Г®ГІГЇГ°Г ГўГ«ГїГҐГ¬ Г®ГЄ 
 					mes = "Correctly";
 					sendto(serverSocket, mes.c_str(), 10, 0, (sockaddr*)&clientInfo, sizeof(clientInfo));//mes.length(),
 				}
 				else 
 				{
-					// не верный пароль
+					// Г­ГҐ ГўГҐГ°Г­Г»Г© ГЇГ Г°Г®Г«Гј
 					Client_ch->countpass -= 1;
-					if (Client_ch->countpass == 0) //нет попыток- в блок
+					if (Client_ch->countpass == 0) //Г­ГҐГІ ГЇГ®ГЇГ»ГІГ®ГЄ- Гў ГЎГ«Г®ГЄ
 					{
 						Client_ch->seconds = time(&rawtime);
-						//присылаем блок
+						//ГЇГ°ГЁГ±Г»Г«Г ГҐГ¬ ГЎГ«Г®ГЄ
 						//mes = "Password is not correct -block";
 							mes = "Blocked.";
 						sendto(serverSocket, mes.c_str(), 11, 0, (sockaddr*)&clientInfo, sizeof(clientInfo));
 					}
 					else 
 					{
-						//не верный пароль
+						//Г­ГҐ ГўГҐГ°Г­Г»Г© ГЇГ Г°Г®Г«Гј
 						//mes = "Password is not correct";
 						mes = "Incorrectly";
 						sendto(serverSocket, mes.c_str(), 11, 0, (sockaddr*)&clientInfo, sizeof(clientInfo));
@@ -127,11 +128,11 @@ int main(int argc, char** argv)
 				
 			else
 			{
-				//больше нет попыток
+				//ГЎГ®Г«ГјГёГҐ Г­ГҐГІ ГЇГ®ГЇГ»ГІГ®ГЄ
 				//block client;
-				if ((time(&rawtime) - Client_ch->seconds) < 120)//с начала блокировки прошло менее 2-х мин
+				if ((time(&rawtime) - Client_ch->seconds) < 120)//Г± Г­Г Г·Г Г«Г  ГЎГ«Г®ГЄГЁГ°Г®ГўГЄГЁ ГЇГ°Г®ГёГ«Г® Г¬ГҐГ­ГҐГҐ 2-Гµ Г¬ГЁГ­
 				{
-					//все еще блокирован
+					//ГўГ±ГҐ ГҐГ№ГҐ ГЎГ«Г®ГЄГЁГ°Г®ГўГ Г­
 					//mes = "Block- Try it later";
 					mes = "Blocked.";
 					sendto(serverSocket, mes.c_str(), 11, 0, (sockaddr*)&clientInfo, sizeof(clientInfo));
@@ -142,14 +143,14 @@ int main(int argc, char** argv)
 					Client_ch->countpass = 3;
 					if (passServer == passClient)
 					{
-						//отправляем ок 
+						//Г®ГІГЇГ°Г ГўГ«ГїГҐГ¬ Г®ГЄ 
 						//mes = "Correct password";
 						mes = "Correctly";
 						sendto(serverSocket, mes.c_str(), 11, 0, (sockaddr*)&clientInfo, sizeof(clientInfo));
 					}
 					else
 					{
-						//не верный пароль
+						//Г­ГҐ ГўГҐГ°Г­Г»Г© ГЇГ Г°Г®Г«Гј
 						//mes = "Password is not correct -block";
 						mes = "Blocked.";
 						sendto(serverSocket, mes.c_str(), 11, 0, (sockaddr*)&clientInfo, sizeof(clientInfo));
@@ -165,7 +166,7 @@ int main(int argc, char** argv)
 	return 0;
 }
 
-ip_pass_count* func1(sockaddr_in& address, std::vector<ip_pass_count>& clients)//получаем ip клиента
+ip_pass_count* func1(sockaddr_in& address, std::vector<ip_pass_count>& clients)//ГЇГ®Г«ГіГ·Г ГҐГ¬ ip ГЄГ«ГЁГҐГ­ГІГ 
 {
 	for (size_t i = 0; i < clients.size(); ++i)
 	{
@@ -176,7 +177,8 @@ ip_pass_count* func1(sockaddr_in& address, std::vector<ip_pass_count>& clients)/
 
 bool alreadyConnected(sockaddr_in& clientInfo, std::vector<sockaddr_in>& connectedAddresses)
 {
-	for (auto client : connectedAddresses)
+	//for (auto client : connectedAddresses)
+	for (size_t i = 0; i < clients.size(); ++i)
 	{
 		if (client.sin_addr.s_addr == clientInfo.sin_addr.s_addr)
 			return true;
