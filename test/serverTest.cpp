@@ -180,7 +180,7 @@ bool alreadyConnected(sockaddr_in& clientInfo, std::vector<sockaddr_in>& connect
 	//for (auto client : connectedAddresses)
 	for (size_t i = 0; i < connectedAddresses.size(); ++i)
 	{
-		if (client.sin_addr.s_addr == clientInfo.sin_addr.s_addr)
+		if (connectedAddresses[i].sin_addr.s_addr == clientInfo.sin_addr.s_addr)
 			return true;
 	}
 
